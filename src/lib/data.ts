@@ -50,7 +50,23 @@ data.content.forEach((rawRecording) => {
   );
 });
 
-let recordings = Array.from(recordingsSet.entries())
+export type Recording = {
+  url: string;
+  start: Date;
+  end: Date | null;
+  course: {
+    id: string;
+    name: string | undefined;
+  };
+  teacher: {
+    email: string;
+    name: string | undefined;
+  };
+  week: number;
+  sessionType: string;
+};
+
+let recordings: Recording[] = Array.from(recordingsSet.entries())
   .map(([id, { url, teacher, startHour, endHour }]) => {
     let courseId = id.split("/")[0];
 
