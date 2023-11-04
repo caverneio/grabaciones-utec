@@ -21,6 +21,11 @@ import { cn } from "@/lib/utils";
 
 export default function Home() {
   let [week, setWeek] = useLocalStorage<number>("week", 0);
+  let maxWeek = React.useMemo(() => {
+    let now = new Date();
+    let week = getWeeksBetweenDates(new Date("2023-08-14"), now) + 1;
+    return week;
+  }, []);
 
   let [copied, setCopied] = React.useState(false);
   let [selected, setSelected] = useLocalStorage<null | string>(
@@ -29,14 +34,12 @@ export default function Home() {
   );
 
   React.useEffect(() => {
-    if (!week) {
+    if (week < 1 || week > maxWeek) {
       setTimeout(() => {
-        if (!week) {
-          let now = new Date();
-          let week = getWeeksBetweenDates(new Date("2023-08-14"), now) + 1;
-          setWeek(week);
+        if (week < 1 || week > maxWeek) {
+          setWeek(maxWeek);
         }
-      }, 1000);
+      }, 500);
     }
   }, [week]);
 
@@ -63,10 +66,13 @@ export default function Home() {
         Clases de Anthony (@cuevantn). Proof of concept. v0.
       </p>
       {!week || !recs || !recs.length ? (
-        <div className="flex items-center justify-center h-96">
-          <div className="animate-spin text-3xl font-bold  bg-gradient-to-r from-teal-500 via-purple-500 to-orange-500 bg-clip-text text-transparent">
-            Pensanding...
+        <div className="flex flex-col gap-8 items-center justify-center h-96">
+          <div className="animate-pulse text-4xl font-bold  bg-gradient-to-r from-teal-500 via-purple-500 to-orange-500 bg-clip-text text-transparent">
+            <h2>Estoy recordando dónde te quedaste...</h2>
           </div>
+          <Button onClick={() => setWeek(1)} size="sm" variant="outline">
+            Ir a la semana 1
+          </Button>
         </div>
       ) : (
         <>
@@ -79,7 +85,7 @@ export default function Home() {
                 value={week}
                 onChange={(e) => setWeek(Number(e.target.value))}
                 min={1}
-                max={16}
+                max={maxWeek}
                 className="w-16 h-9"
               />
             </div>
@@ -96,7 +102,7 @@ export default function Home() {
                 onClick={() => setWeek((week) => (week ? week + 1 : 1))}
                 variant="outline"
                 size="sm"
-                disabled={week === 16}
+                disabled={week === maxWeek}
               >
                 Siguiente
               </Button>
