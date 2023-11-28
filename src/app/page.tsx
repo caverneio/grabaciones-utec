@@ -43,6 +43,8 @@ export default function Home() {
     }
   }, [week]);
 
+  console.log(maxWeek);
+
   let [recs, setRecs] = React.useState<Recording[]>([]);
 
   React.useEffect(() => {
@@ -102,7 +104,7 @@ export default function Home() {
                 onClick={() => setWeek((week) => (week ? week + 1 : 1))}
                 variant="outline"
                 size="sm"
-                disabled={week === maxWeek}
+                disabled={week === maxWeek - 1}
               >
                 Siguiente
               </Button>
